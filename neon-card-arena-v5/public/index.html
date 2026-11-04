@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b12">
+  <title>NEON CARD ARENA // NIGHT CITY</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">N<span>///</span></span><span>NEON CARD ARENA</span><small>NETRUNNER TABLETOP // V5</small></div>
+    <div class="online" id="connection">● BAĞLANIYOR</div>
+  </header>
+
+  <main class="landing" id="landing">
+    <section class="hero">
+      <span class="eyebrow">NIGHT CITY // MULTIPLAYER DUELS</span>
+      <h1>OWN THE <em>NIGHT.</em></h1>
+      <p>3 ANA KART + 2 DESTEK • 4D6 MALİYET HAVUZU • 2D6 GÜÇ & RAM</p>
+      <p>Rakibine karşı üç el boyunca savaş. Kartlar gizli seçilir, aynı anda açılır, saldırı ve RAM zarları çatışmayı belirler.</p>
+      <div class="hero-tiles"><span>01 // DRAFT</span><span>02 // ROLL</span><span>03 // DUEL</span></div>
+    </section>
+    <section class="join-panel panel">
+      <div class="tabs"><button class="active" data-mode="create">ODA AÇ</button><button data-mode="join">OYNA</button><button data-mode="spectate">İZLE</button></div>
+      <form id="roomForm">
+        <label>TAKMA AD <input id="name" maxlength="24" placeholder="Karakter adı" required></label>
+        <label id="codeWrap" hidden>ODA KODU <input id="code" maxlength="6" placeholder="AB1234"></label>
+        <label>ODA ŞİFRESİ <input id="password" type="password" minlength="4" maxlength="64" placeholder="En az 4 karakter" required></label>
+        <button id="submitRoom" type="submit" class="primary">ODA OLUŞTUR</button>
+        <p>Oda bağlantısını arkadaşlarına gönder. Şifreyi ayrı paylaş.</p>
+      </form>
+    </section>
+  </main>
+
+  <main class="game" id="game" hidden>
+    <section class="room-bar panel">
+      <div class="room-label"><small id="stageLabel">ODA BEKLEME ALANI</small><strong>ROOM <span id="roomCode">------</span></strong></div>
+      <div class="room-actions"><span class="spectators">◉ <b id="spectators">0</b> İZLEYİCİ</span><button class="outline" id="copyLink">DAVET LİNKİ</button><button class="primary" id="start" hidden>MAÇI BAŞLAT</button><button class="outline" id="reset" hidden>YENİ MAÇ</button><button class="outline danger" id="closeRoom" hidden>ODAYI KAPAT</button></div>
+    </section>
+    <div class="layout">
+      <aside class="stats panel">
+        <h2>OYUNCULAR <span>CANLI</span></h2>
+        <div class="players" id="players"></div>
+        <h2>SKOR <span>BEST OF 3</span></h2>
+        <div class="score" id="score">0 : 0</div>
+        <p class="status" id="status">Rakip bekleniyor.</p>
+        <h2>ZAR TERMINALİ <span>D6</span></h2>
+        <div class="dice-box" id="diceBox"><span>Zar atışları burada görünür.</span></div>
+        <button class="primary full" id="rollBudget" hidden>4D6 BÜTÇE AT</button>
+        <button class="primary full" id="rollAttack" hidden>2D6 SALDIRI + RAM AT</button>
+        <button class="outline full" id="finishTurn" hidden>DESTEĞİ BİTİR / KİLİTLE</button>
+        <div class="budget-line"><div><small>KALAN BÜTÇE</small><b id="budget">—</b></div><div><small>MAÇ HAVUZU</small><b id="budgetMax">—</b></div></div>
+      </aside>
+
+      <section class="battlefield panel">
+        <div class="battlehead"><span>⚡ NEON DUEL // BATTLEFIELD</span><b id="roundLabel">EL — / 3</b></div>
+        <div class="battle" id="battle"><div class="waiting">VS<small>Rakip bekleniyor</small></div></div>
+        <div class="battle-foot" id="battleFoot">İki oyuncunun kartları açıldığında karşılaşma burada gösterilir.</div>
+      </section>
+
+      <aside class="inventory panel">
+        <div class="inv-section">
+          <h2>ANA KARTLAR <span id="mainCount">0 / 3</span></h2>
+          <div class="inv-cards" id="mainHand"></div>
+        </div>
+        <div class="inv-section">
+          <h2>DESTEK KARTLARI <span id="supportCount">0 / 2</span></h2>
+          <div class="support-info" id="ramInfo">Fazla RAM elde etmek için önce ana kart oyna ve RAM kontrolünü geç.</div>
+          <div class="inv-cards support-hand" id="supportHand"></div>
+        </div>
+        <div class="inv-bottom">
+          <div class="active-info" id="activeInfo"></div>
+          <h2>EL GEÇMİŞİ <span>3 EL</span></h2>
+          <div class="history" id="history"></div>
+        </div>
+      </aside>
+    </div>
+    <section class="draft panel" id="draft" hidden>
+      <div class="draft-head"><b id="draftTitle">KART SEÇ</b><small id="draftStatus">Sıra sende</small></div>
+      <div class="draft-pool" id="draftPool"></div>
+    </section>
+  </main>
+
+  <div class="overlay" id="duelOverlay" hidden>
+    <div class="overlay-title"><small id="duelSub">EL TAMAMLANDI</small><h2 id="duelHeading">DÜELLO</h2></div>
+    <div class="duel-cards" id="duelCards"></div>
+    <button class="primary" id="dismissDuel">OYUNA DÖN</button>
+  </div>
+  <div class="dice-overlay" id="diceOverlay" hidden>
+    <div class="dice-panel panel"><small id="diceTitle">DICE PROTOCOL // 2D6</small><h2 id="diceHeadline">ZARLAR ATILIYOR</h2><div class="dice-cubes" id="diceCubes"></div><p id="diceExplanation">Saldırı ve RAM kontrolü hesaplanıyor...</p></div>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
